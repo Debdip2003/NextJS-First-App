@@ -1,39 +1,39 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Login() {
+  const router = useRouter();
   const [user, setUser] = React.useState({
     email: "",
     password: "",
-    username: "",
   });
+  const [message, setMessage] = React.useState("");
 
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    const res = await fetch("/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setMessage("Login successful");
+      router.push(`/profile/${data.user.id}`);
+    } else {
+      setMessage(data.error);
+    }
   };
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="w-full max-w-md p-6">
         <h1 className="text-2xl font-bold mb-4">Login</h1>
         <form>
-          <div className="mb-4">
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium mb-2"
-            >
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              className="w-full p-2 border rounded"
-              value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.target.value })}
-              required
-            />
-          </div>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium mb-2">
               Email
@@ -68,8 +68,9 @@ export default function Login() {
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
             onClick={onLogin}
           >
-            Signup
+            Login
           </button>
+          <div className="mt-2 text-center">{message}</div>
           <div className="mt-4 text-center">
             <p>
               Don't have an account?{" "}
