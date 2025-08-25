@@ -1,11 +1,9 @@
-import Profile from "./profile/page";
-import SignUp from "./signup/page";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   return (
     <div>
-      <SignUp />
-      <Profile />
+      <Navbar />
     </div>
   );
 }
