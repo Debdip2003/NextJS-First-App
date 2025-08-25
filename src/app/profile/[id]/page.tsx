@@ -1,17 +1,41 @@
-export default function UserProfile({
-  params: { id },
+"use client";
+
+import { use, useEffect, useState } from "react";
+
+export default function UserProfilePage({
+  params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = use(params);
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`/api/users/${id}`);
+        console.log(res.url);
+        const data = await res.json();
+        console.log(data);
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    if (id) {
+      fetchUser();
+    }
+  }, [id]);
+
+  if (!user) {
+    return <p className="p-6">Loading user...</p>;
+  }
+
   return (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="w-full max-w-md p-6">
-        <h1 className="text-2xl font-bold mb-4">Profile</h1>
-        <p className="text-gray-700 mb-4">This is your profile page of {id}</p>
-        <p className="text-gray-500">
-          You can view and edit your profile information here.
-        </p>
-      </div>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-2">{user.username}</h1>
+      <p>Email: {user.email}</p>
     </div>
   );
 }

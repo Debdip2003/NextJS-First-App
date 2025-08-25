@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import React from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 
-export default function LoginPage() {
+export default function Login() {
   const [user, setUser] = React.useState({
     email: "",
     password: "",
